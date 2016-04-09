@@ -2,6 +2,7 @@ import java.io.*;
 import java.net.URI;
 import java.security.SecureClassLoader;
 import java.text.MessageFormat;
+import java.util.concurrent.Callable;
 import javax.tools.*;
 import static java.util.Collections.singleton;
 import static javax.tools.JavaFileObject.Kind.SOURCE;
@@ -13,7 +14,7 @@ public class Hackassert
         String TEST_CLASS = "Test";
         String TEST_URI = "string:///" + TEST_CLASS;
         ByteArrayOutputStream content = new ByteArrayOutputStream();
-        MessageFormat template = new MessageFormat("public class Test implements Runnable '{' public void run() '{'\n{0}'}}'");
+        MessageFormat template = new MessageFormat("public class Test implements java.util.concurrent.Callable<Void> '{' public Void call() throws Exception '{'\n{0}\nreturn null;'}}'");
         JavaCompiler javac = ToolProvider.getSystemJavaCompiler();
         JavaFileManager fileManager = new ForwardingJavaFileManager<JavaFileManager>(javac.getStandardFileManager(null, null, null))
         {
@@ -58,8 +59,16 @@ public class Hackassert
                 return template.format(new String[] {content.toString()});
             }
         };
-        Boolean successful = javac.getTask(null, fileManager, null, null, null, singleton(source)).call();
-        System.out.println(successful? "OK":"");
-        ((Runnable)fileManager.getClassLoader(null).loadClass(TEST_CLASS).newInstance()).run();
+        if (javac.getTask(null, fileManager, null, null, null, singleton(source)).call()) {
+            try {
+                @SuppressWarnings("unchecked")
+                Callable<Void> callable = (Callable<Void>)fileManager.getClassLoader(null).loadClass(TEST_CLASS).newInstance();
+                callable.call();
+                System.out.println("OK");
+            }
+            catch (Exception exception) {
+                exception.printStackTrace();
+            }
+        }
     }
 } 

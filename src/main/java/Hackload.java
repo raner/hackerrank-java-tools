@@ -13,8 +13,6 @@ public class Hackload {
         while ((data = System.in.read()) != -1) {
             if (name == null && data == 10) {
                 name = new String(contents.toByteArray());
-                System.err.println();
-                System.err.println("Name is " + name);
                 contents.reset();
             }
             if (data != 10) {
@@ -40,7 +38,7 @@ public class Hackload {
             main.invoke(null, (Object)noArguments);
         }
         catch (Exception exception) {
-            exception.printStackTrace();
+            exception.printStackTrace(System.out);
         }
     }
 }

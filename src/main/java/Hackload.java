@@ -1,6 +1,4 @@
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
-import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.security.SecureClassLoader;
 import java.util.Base64;
@@ -13,8 +11,6 @@ public class Hackload {
         ByteArrayOutputStream contents = new ByteArrayOutputStream();
         int data;
         while ((data = System.in.read()) != -1) {
-            //if (contents.size() < 4) System.err.println(Integer.toHexString(data));
-            //System.err.println(data);
             if (name == null && data == 10) {
                 name = new String(contents.toByteArray());
                 System.err.println();
@@ -34,8 +30,7 @@ public class Hackload {
             @Override
             protected Class<?> findClass(final String className) throws ClassNotFoundException
             {
-                System.err.println("Loading class " + className);
-                return outerName.equals(className)? super.defineClass(className, bytecode, 0, bytecode.length):super.findClass(className);
+                return className.equals(outerName)? super.defineClass(className, bytecode, 0, bytecode.length):super.findClass(className);
             }
         };
         Class<?> testClass = classLoader.loadClass(name);

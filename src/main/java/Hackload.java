@@ -7,6 +7,7 @@ public class Hackload {
 
     public static void main(String... arguments) throws Exception {
 
+        try {
         String name = null;
         ByteArrayOutputStream contents = new ByteArrayOutputStream();
         int data;
@@ -33,7 +34,6 @@ public class Hackload {
         };
         Class<?> testClass = classLoader.loadClass(name);
         Method main = testClass.getDeclaredMethod("main", String[].class);
-        try {
             String[] noArguments = {};
             main.invoke(null, (Object)noArguments);
         }

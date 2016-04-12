@@ -59,7 +59,7 @@ public class Hackassert
                 return template.format(new String[] {content.toString()});
             }
         };
-        if (javac.getTask(null, fileManager, null, null, null, singleton(source)).call()) {
+        if (javac.getTask(new PrintWriter(System.out, true), fileManager, null, null, null, singleton(source)).call()) {
             try {
                 @SuppressWarnings("unchecked")
                 Callable<Void> callable = (Callable<Void>)fileManager.getClassLoader(null).loadClass(TEST_CLASS).newInstance();

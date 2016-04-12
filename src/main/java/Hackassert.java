@@ -64,7 +64,6 @@ public class Hackassert
                 @SuppressWarnings("unchecked")
                 Callable<Void> callable = (Callable<Void>)fileManager.getClassLoader(null).loadClass(TEST_CLASS).newInstance();
                 callable.call();
-                System.out.println("OK");
             }
             catch (Exception exception) {
                 exception.printStackTrace();

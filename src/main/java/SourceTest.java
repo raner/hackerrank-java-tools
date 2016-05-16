@@ -7,7 +7,7 @@ import javax.tools.*;
 import static java.util.Collections.singleton;
 import static javax.tools.JavaFileObject.Kind.SOURCE;
 
-public class Hackassert
+public class SourceTest
 {
     public static void main(String... arguments) throws Exception
     {
@@ -18,7 +18,7 @@ public class Hackassert
         JavaCompiler javac = ToolProvider.getSystemJavaCompiler();
         JavaFileManager fileManager = new ForwardingJavaFileManager<JavaFileManager>(javac.getStandardFileManager(null, null, null))
         {
-            private ByteArrayOutputStream bytecode = new ByteArrayOutputStream();
+            ByteArrayOutputStream bytecode = new ByteArrayOutputStream();
 
             @Override
             public ClassLoader getClassLoader(final Location location)
@@ -59,15 +59,18 @@ public class Hackassert
                 return template.format(new String[] {content.toString()});
             }
         };
-        if (javac.getTask(new PrintWriter(System.out, true), fileManager, null, null, null, singleton(source)).call()) {
-            try {
+        if (javac.getTask(new PrintWriter(System.out, true), fileManager, null, null, null, singleton(source)).call())
+        {
+            try
+            {
                 @SuppressWarnings("unchecked")
                 Callable<Void> callable = (Callable<Void>)fileManager.getClassLoader(null).loadClass(TEST_CLASS).newInstance();
                 callable.call();
             }
-            catch (Exception exception) {
+            catch (Exception exception)
+            {
                 exception.printStackTrace();
             }
         }
     }
-} 
+}
